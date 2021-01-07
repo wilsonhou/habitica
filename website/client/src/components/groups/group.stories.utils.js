@@ -83,7 +83,7 @@ export const groupBossQuestParticipating = {
 export const groupBossQuestRage = {
   leaderOnly: { challenges: false, getGems: false },
   quest: {
-    progress: { collect: {}, hp: 30, rage: 20 },
+    progress: { collect: {}, hp: 30, rage: 20.33434535 },
     active: true,
     members: { 'acc2950e-9919-49bc-be7f-0ec4103e9f2b': true },
     extra: {},
@@ -225,7 +225,7 @@ export const groupCollectionQuestPending = {
 export const collectionQuestLeaderParticipating = {
   leaderOnly: { challenges: false, getGems: false },
   quest: {
-    progress: { collect: { fireCoral: 4, blueFins: 3 } },
+    progress: { collect: { fireCoral: 4, blueFins: 0 } },
     active: true,
     members: { '05ca98f4-4706-47b5-8d02-142e6e78ba2e': true },
     extra: {},

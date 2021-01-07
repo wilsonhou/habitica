@@ -28,16 +28,16 @@
       v-if="user.party.quest && user.party.quest.RSVPNeeded"
       class="quest-active-section quest-invite"
     >
-      <span class="participate">{{ $t('wouldYouParticipate') }}</span>
+      <span class="participate">{{ $t('invitedToQuest') }}</span>
       <div class="buttons">
         <button
-          class="btn btn-primary accept"
+          class="btn btn-success accept"
           @click="questAccept(group._id)"
         >
           {{ $t('accept') }}
         </button>
         <button
-          class="btn btn-primary reject"
+          class="btn btn-danger reject"
           @click="questReject(group._id)"
         >
           {{ $t('reject') }}
@@ -76,7 +76,8 @@
                   ></div>
                 </div>
                 <div class="item-progress-row">
-                  <span class="label item-progress">
+                  <span class="label item-progress"
+                        :class="{'no-items': group.quest.progress.collect[key] === 0}">
                     {{ group.quest.progress.collect[key] }} / {{ value.count }}
                   </span>
                   <div
@@ -171,10 +172,10 @@
             >
               <div class="col-6">
                 <span class="float-left rage-value">
-                  <div class="svg-icon health-icon"
+                  <div class="svg-icon rage-icon icon-16"
                        v-html="icons.rageIcon">
                   </div>
-                  {{ parseFloat(group.quest.progress.rage) }}
+                  {{ Math.ceil(parseFloat(group.quest.progress.rage)) }}
                   / {{ questData.boss.rage.value }}
                   <strong v-once>{{$t('rage')}}</strong>
                 </span>
@@ -210,7 +211,7 @@
         class="btn btn-secondary full-width mb-1"
         @click="openQuestDetails()"
       >
-        {{ $t('details') }}
+        {{ $t('viewDetails') }}
       </button>
     </div>
     <div v-if="userIsQuestLeader && !onActiveQuest">
@@ -264,7 +265,7 @@
 
   .boss-health-bar {
     width: 80%;
-    background-color: red;
+    background-color: $red-50;
     height: 0.75rem;
     margin-bottom: 0.5rem;
 
@@ -279,7 +280,6 @@
   }
 
   .rage-details {
-    margin-bottom: 1em;
   }
 
   .boss-health-bar.rage-bar {
@@ -443,6 +443,17 @@
         margin-right: 0.25rem;
       }
 
+      .rage-icon {
+        width: 1rem;
+        height: 1rem;
+        object-fit: contain;
+        margin-right: 0.25rem;
+
+        ::v-deep svg {
+          height: 1rem;
+        }
+      }
+
       .sword-icon {
         width: 1rem;
         height: 1rem;
@@ -486,12 +497,10 @@
     }
 
     .accept {
-      background-color: #24cc8f;
       margin: 0 0.5rem 0 0;
     }
 
     .reject {
-      background-color: #f74e52;
     }
   }
 
@@ -550,7 +559,7 @@
         }
       }
 
-      .item-progress {
+      .item-progress:not(.no-items) {
         color: $green-10;
       }
 

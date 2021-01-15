@@ -18,6 +18,7 @@ import {
 import shared from '../../../common';
 import { sendNotification as sendPushNotification } from '../pushNotifications'; // eslint-disable-line import/no-cycle
 import calculateSubscriptionTerminationDate from './calculateSubscriptionTerminationDate';
+import { getCurrentEvent } from '../worldState'; // eslint-disable-line import/no-cycle
 
 // @TODO: Abstract to shared/constant
 const JOINED_GROUP_PLAN = 'joined group plan';
@@ -197,13 +198,13 @@ async function createSubscription (data) {
     // generate the message in both languages, so both users can understand it
     const languages = [data.user.preferences.language, data.gift.member.preferences.language];
     if (data.promo) {
-      let senderMsg = shared.i18n.t(`giftedSubscription${data.promo}Promo`, {
+      let receiverMsg = shared.i18n.t(`giftedSubscription${data.promo}Promo`, {
         username: data.gift.member.profile.name,
         monthCount: shared.content.subscriptionBlocks[data.gift.subscription.key].months,
       }, languages[0]);
 
-      senderMsg = `\`${senderMsg}\``;
-      data.user.sendMessage(data.gift.member, { senderMsg });
+      receiverMsg = `\`${receiverMsg}\``;
+      data.user.sendMessage(data.gift.member, { receiverMsg, save: false });
     } else {
       let senderMsg = shared.i18n.t('giftedSubscriptionFull', {
         username: data.gift.member.profile.name,
@@ -243,6 +244,23 @@ async function createSubscription (data) {
 
     // Only send push notifications if sending to a user other than yourself
     if (data.gift.member._id !== data.user._id) {
+      const currentEvent = getCurrentEvent();
+      if (currentEvent && currentEvent.promo && currentEvent.promo === 'g1g1') {
+        const promoData = {
+          user: data.user,
+          gift: {
+            member: data.user,
+            subscription: {
+              key: data.gift.subscription.key,
+            },
+          },
+          paymentMethod: data.paymentMethod,
+          promo: 'Winter',
+          promoUsername: data.gift.member.auth.local.username,
+        };
+        await this.createSubscription(promoData);
+      }
+
       if (data.gift.member.preferences.pushNotifications.giftedSubscription !== false) {
         sendPushNotification(data.gift.member,
           {

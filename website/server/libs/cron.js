@@ -150,6 +150,7 @@ function removeTerminatedSubscription (user) {
   _.merge(plan, {
     planId: null,
     customerId: null,
+    subscriptionId: null,
     paymentMethod: null,
   });
 

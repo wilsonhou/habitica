@@ -1385,7 +1385,7 @@ schema.methods.leave = async function leaveGroup (user, keep = 'keep-all', keepC
     userId: { $exists: false },
     $or: [
       { 'group.assignedUsers': user._id },
-      { 'group.claimedUser': user._id },
+      { 'group.claimedUsers': user._id },
     ],
   }).exec();
   const assignedTasksToRemoveUserFrom = assignedTasks
@@ -1518,11 +1518,14 @@ schema.methods.syncTask = async function groupSyncTask (taskToSync, user, assign
       taskToSync.group.assignedUsers.push(user._id);
     }
     taskToSync.group.claimable = false;
-    if (taskToSync.claimedUser) {
-      await group.unlinkTask(taskToSync, user);
+    if (taskToSync.group.claimedUsers.length > 0) {
+      const claimedUsers = await User.find({ _id: { $in: taskToSync.group.claimedUsers } }, '_id tasksOrder').exec();
+      await Promise.all(claimedUsers.map(claimedUser => group.unlinkTask(
+        taskToSync, claimedUser, null, null, false,
+      )));
     }
   } else {
-    taskToSync.group.claimedUser = user._id;
+    taskToSync.group.claimedUsers.push(user._id);
   }
 
   // Sync tags
@@ -1571,7 +1574,7 @@ schema.methods.syncTask = async function groupSyncTask (taskToSync, user, assign
 
   matchingTask.group.approval.required = taskToSync.group.approval.required;
   matchingTask.group.assignedUsers = taskToSync.group.assignedUsers;
-  matchingTask.group.claimedUser = taskToSync.group.claimedUser;
+  matchingTask.group.claimedUsers = taskToSync.group.claimedUsers;
   matchingTask.group.sharedCompletion = taskToSync.group.sharedCompletion;
   matchingTask.group.managerNotes = taskToSync.group.managerNotes;
   if (assigningUser && user._id !== assigningUser._id) {
@@ -1613,12 +1616,14 @@ schema.methods.unlinkTask = async function groupUnlinkTask (
   };
 
   const assignedUserIndex = unlinkingTask.group.assignedUsers.indexOf(user._id);
+  const claimedUserIndex = unlinkingTask.group.claimedUsers.indexOf(user._id);
+
   if (assignedUserIndex !== -1) {
     unlinkingTask.group.assignedUsers.splice(assignedUserIndex, 1);
-  } else if (unlinkingTask.group.claimedUser === user._id) {
-    unlinkingTask.group.claimedUser = '';
+  } else if (claimedUserIndex !== -1) {
+    unlinkingTask.group.claimedUsers.splice(claimedUserIndex, 1);
   } else {
-    throw new BadRequest('Cannot unassign user who is not assigned.');
+    throw new BadRequest('Cannot remove user who does not own this task.');
   }
 
   if (keep === 'keep-all') {

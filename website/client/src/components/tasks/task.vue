@@ -1043,15 +1043,15 @@ export default {
     },
     isOpenTask () {
       if (!this.isGroupTask) return false;
-      if (this.task.group.claimable || this.task.group.claimedUser) return false;
-      if (this.task.group.assignedUsers.length !== 0) return false;
+      if (this.task.group.claimable || this.task.group.claimedUsers.length > 0) return false;
+      if (this.task.group.assignedUsers.length > 0) return false;
       return true;
     },
     showTaskLockIcon () {
       if (this.isUser) return false;
       if (this.isGroupTask) {
         if (this.isOpenTask) return false;
-        if (this.task.group.claimedUser === this.user._id) return false;
+        if (this.task.group.claimedUsers.indexOf(this.user._id) !== -1) return false;
         if (this.task.group.assignedUsers.indexOf(this.user._id) !== -1) return false;
       }
       return true;

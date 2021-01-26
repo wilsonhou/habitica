@@ -125,7 +125,7 @@ function _nonInteractive (task, userId) {
   if (task.challenge && task.challenge.id) return true;
   if (task.group) {
     if (!task.group.claimable && task.group.assignedUsers.length === 0) return false;
-    if (task.group.claimedUser === userId) return false;
+    if (task.group.claimedUsers.indexOf(userId) !== -1) return false;
     if (task.group.assignedUsers.indexOf(userId) !== -1) return false;
     return true;
   }

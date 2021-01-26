@@ -379,7 +379,7 @@ async function scoreTask (user, task, direction, req, res) {
   let localTask;
 
   if (task.group.id && !task.userId) { // Task is being scored from team board
-    if (task.group.claimable && task.group.claimedUser !== user._id) {
+    if (task.group.claimable && task.group.claimedUsers.indexOf(user._id) === -1) {
       throw new BadRequest('Task must be claimed before scoring.');
     }
     if (task.group.assignedUsers.length > 0 && !task.group.assignedUsers.includes(user._id)) {

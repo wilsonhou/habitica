@@ -20,8 +20,7 @@
         >{{ $t('unassign') }}</a>
       </div>
       <div
-        v-if="task.group.claimable && !task.completed
-          && !task.group.claimedUser && task.group.assignedUsers.length === 0"
+        v-if="!userHasClaimed && !task.completed && task.group.assignedUsers.length === 0"
         class="ml-auto mr-2"
       >
         <a
@@ -30,8 +29,7 @@
         >{{ $t('claim') }}</a>
       </div>
       <div
-        v-if="(userHasClaimed || userIsManager)
-          && task.group.claimedUser && !approvalRequested && !task.completed"
+        v-if="userHasClaimed && !approvalRequested && !task.completed"
         class="ml-auto mr-2"
       >
         <a
@@ -112,18 +110,36 @@ export default {
         && this.task.group.assignedUsers.indexOf(this.user._id) !== -1;
     },
     userHasClaimed () {
-      return this.task.group.claimedUser
-        && this.task.group.claimedUser === this.user._id;
+      return this.task.group.claimedUsers
+        && this.task.group.claimedUsers.indexOf(this.user._id) !== -1;
     },
     message () {
-      const { assignedUsers, claimable, claimedUser } = this.task.group;
-      const assignedUsersLength = assignedUsers.length;
+      const { assignedUsers, claimable, claimedUsers } = this.task.group;
 
-      if (assignedUsers.length === 0 && claimable && !claimedUser) {
+      if (claimable) {
+        const claimedUsersLength = claimedUsers.length;
+        const claimedUsersNames = [];
+        if (this.group && this.group.members) {
+          claimedUsers.forEach(userId => {
+            const index = findIndex(this.group.members, member => member._id === userId);
+            const claimedMember = this.group.members[index];
+            claimedUsersNames.push(`@${claimedMember.auth.local.username}`);
+          });
+        }
+
+        if (claimedUsersLength === 1 && !this.userHasClaimed) {
+          return this.$t('claimedByUser', { userName: claimedUsersNames[0] });
+        } if (claimedUsersLength > 1 && !this.userHasClaimed) {
+          return this.$t('claimedByMembers', { userCount: claimedUsersLength });
+        } if (claimedUsersLength > 1 && this.userHasClaimed) {
+          return this.$t('claimedByYouAndMembers', { userCount: claimedUsersLength - 1 });
+        } if (this.userHasClaimed) {
+          return this.$t('youClaimedTask');
+        }
         return this.$t('taskIsUnclaimed');
       }
-      if (this.userHasClaimed) return this.$t('youClaimedTask');
 
+      const assignedUsersLength = assignedUsers.length;
       const assignedUsersNames = [];
       if (this.group && this.group.members) {
         assignedUsers.forEach(userId => {
@@ -141,7 +157,7 @@ export default {
         return this.$t('assignedToYouAndMembers', { userCount: assignedUsersLength - 1 });
       } if (this.userIsAssigned) {
         return this.$t('youAreAssigned');
-      } // if (assignedUsersLength === 0) {
+      }
       return this.$t('taskIsUnassigned');
     },
     userIsManager () {
@@ -173,7 +189,7 @@ export default {
       }
 
       await this.$store.dispatch('tasks:claimTask', { taskId });
-      this.task.group.claimedUser = this.user._id;
+      this.task.group.claimedUsers.push(this.user._id);
       this.sync();
     },
     async unclaim () {
@@ -184,7 +200,9 @@ export default {
       }
 
       await this.$store.dispatch('tasks:unclaimTask', { taskId });
-      this.task.group.claimedUser = null;
+      this.task.group.claimedUsers.splice(
+        this.task.group.claimedUsers.indexOf(this.user._id), 1,
+      );
       this.sync();
     },
     async unassign () { // Only available if there is just a single assigned user

@@ -323,7 +323,7 @@ api.claimTask = {
 
     if (!task.group.claimable) throw new BadRequest('Task has not been marked available for claiming.');
 
-    if (task.group.claimedUser) throw new BadRequest('Task already claimed.');
+    if (task.group.claimedUsers.indexOf(user._id) !== -1) throw new BadRequest('Task already claimed.');
 
     const groupFields = `${requiredGroupFields} managers`;
     const group = await Group.getGroup({ user, groupId: task.group.id, fields: groupFields });
@@ -390,7 +390,7 @@ api.unclaimTask = {
     const group = await Group.getGroup({ user, groupId: task.group.id, requiredGroupFields });
     if (!group) throw new NotFound(res.t('groupNotFound'));
 
-    if (task.group.claimedUser !== user._id) throw new BadRequest('You have not claimed this task.');
+    if (task.group.claimedUsers.indexOf(user._id) === -1) throw new BadRequest('You have not claimed this task.');
 
     await group.unlinkTask(task, user);
 

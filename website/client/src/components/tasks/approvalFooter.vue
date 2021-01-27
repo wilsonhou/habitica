@@ -2,7 +2,23 @@
   <div>
     <approval-modal :task="task" />
     <div
-      v-if="!(userIsAssigned && task.group.approval.approved
+      v-if="approvalRequested && userIsManager"
+      class="claim-bottom-message d-flex align-items-center justify-content-around"
+    >
+      <a
+        class="approve-color"
+        @click="approve()"
+      >{{ $t('approveTask') }}</a>
+      <a @click="needsWork()">{{ $t('needsWork') }}</a>
+    </div>
+    <div
+      v-else-if="multipleApprovalsRequested && userIsManager"
+      class="claim-bottom-message d-flex align-items-center"
+    >
+      <a @click="showRequests()">{{ $t('viewRequests') }}</a>
+    </div>
+    <div
+      v-else-if="!(userIsAssigned && task.group.approval.approved
         && !task.completed && task.type !== 'habit')"
       class="claim-bottom-message d-flex align-items-center"
     >
@@ -37,22 +53,6 @@
           @click="unclaim()"
         >{{ $t('removeClaim') }}</a>
       </div>
-    </div>
-    <div
-      v-if="approvalRequested && userIsManager"
-      class="claim-bottom-message d-flex align-items-center justify-content-around"
-    >
-      <a
-        class="approve-color"
-        @click="approve()"
-      >{{ $t('approveTask') }}</a>
-      <a @click="needsWork()">{{ $t('needsWork') }}</a>
-    </div>
-    <div
-      v-if="multipleApprovalsRequested && userIsManager"
-      class="claim-bottom-message d-flex align-items-center"
-    >
-      <a @click="showRequests()">{{ $t('viewRequests') }}</a>
     </div>
     <div
       v-if="userIsAssigned && task.group.approval.approved
@@ -222,9 +222,9 @@ export default {
 
       this.sync();
     },
-    approve () {
+    async approve () {
       const userIdToApprove = this.task.group.assignedUsers[0];
-      this.$store.dispatch('tasks:approve', {
+      await this.$store.dispatch('tasks:approve', {
         taskId: this.task._id,
         userId: userIdToApprove,
       });

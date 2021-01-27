@@ -631,7 +631,7 @@ api.getGroupApprovals = {
     if (canNotEditTasks(group, user)) {
       approvals = await Tasks.Task.find({
         'group.id': groupId,
-        'group.approval.approved': false,
+        'group.approval.approved': { $ne: true },
         'group.approval.requested': true,
         'group.assignedUsers': user._id,
         userId: user._id,
@@ -641,7 +641,7 @@ api.getGroupApprovals = {
     } else {
       approvals = await Tasks.Task.find({
         'group.id': groupId,
-        'group.approval.approved': false,
+        'group.approval.approved': { $ne: true },
         'group.approval.requested': true,
       }, 'userId group text')
         .populate('userId', 'profile')

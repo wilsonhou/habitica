@@ -12,6 +12,7 @@
         v-if="task.group.id"
         :task="task"
         :group="group"
+        :key="approvalHeaderKey"
       />
       <div
         class="d-flex"
@@ -380,6 +381,7 @@
         v-if="task.group.id && !isOpenTask"
         :task="task"
         :group="group"
+        :key="approvalFooterKey"
         @claimRewards="score('up')"
       />
     </div>
@@ -937,6 +939,8 @@ export default {
         menu: menuIcon,
         lock: lockIcon,
       }),
+      approvalHeaderKey: 0,
+      approvalFooterKey: 1,
     };
   },
   computed: {
@@ -1058,8 +1062,7 @@ export default {
     },
     taskNotScoreable () {
       if (this.showTaskLockIcon) return true;
-      if (this.task.group.approval.requested
-        && !(this.task.group.approval.approved && this.task.type === 'habit')) return true;
+      if (this.task.group.approval.requested && !this.task.group.approval.approved) return true;
       return false;
     },
   },
@@ -1139,6 +1142,10 @@ export default {
         this.playTaskScoreSound(this.task, direction);
       } else {
         this.taskScore(this.task, direction);
+        if (this.isGroupTask) {
+          this.approvalHeaderKey += 1;
+          this.approvalFooterKey += 1;
+        }
       }
     },
     handleBrokenTask (task) {

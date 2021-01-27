@@ -346,12 +346,19 @@ async function handleGroupTask (task, delta, direction) {
       }).exec();
 
       if (groupTask) {
-        await handleSharedCompletion(groupTask, task);
+        if (groupTask.group.approval.required && !groupTask.group.approval.approved) {
+          if (groupTask.group.approval.requestingUsers.indexOf(task.userId) === -1) {
+            groupTask.group.approval.requestingUsers.push(task.userId);
+            await groupTask.save();
+          }
+        } else {
+          await handleSharedCompletion(groupTask, task);
 
-        const groupDelta = groupTask.group.assignedUsers
-          ? delta / groupTask.group.assignedUsers.length
-          : delta;
-        await groupTask.scoreChallengeTask(groupDelta, direction);
+          const groupDelta = groupTask.group.assignedUsers
+            ? delta / groupTask.group.assignedUsers.length
+            : delta;
+          await groupTask.scoreChallengeTask(groupDelta, direction);
+        }
       }
     } catch (e) {
       logger.error(e, 'Error scoring group task');
@@ -416,9 +423,6 @@ async function scoreTask (user, task, direction, req, res) {
 
       task.group.approval.requested = true;
       task.group.approval.requestedDate = new Date();
-      if (task.group.approval.requestingUsers.indexOf(user._id) === -1) {
-        task.group.approval.requestingUsers.push(user._id);
-      }
 
       const managers = await User.find({ _id: managerIds }, 'notifications preferences').exec(); // Use this method so we can get access to notifications
 

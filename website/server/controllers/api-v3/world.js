@@ -1,5 +1,6 @@
 import {
   getCurrentEvent,
+  getCurrentEventList,
   getWorldBoss,
 } from '../../libs/worldState';
 
@@ -29,9 +30,11 @@ api.getWorldState = {
     const worldState = {};
 
     worldState.worldBoss = await getWorldBoss();
-    worldState.npcImageSuffix = 'spring';
 
     worldState.currentEvent = getCurrentEvent();
+    worldState.npcImageSuffix = worldState.currentEvent.npcImageSuffix;
+
+    worldState.currentEventList = getCurrentEventList();
 
     res.respond(200, worldState);
   },

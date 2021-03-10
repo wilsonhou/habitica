@@ -13,6 +13,7 @@ export const EVENTS = {
     start: '2021-02-20T08:00-05:00',
     end: '2021-03-20T20:00-05:00',
     promo: 'g1g1',
+    aprilFools: 'invert',
   },
   testEvent2021: {
     start: '2021-02-25T08:00-05:00',

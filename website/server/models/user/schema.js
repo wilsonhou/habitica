@@ -604,7 +604,7 @@ export default new Schema({
       $type: Number,
       default: 1,
       min: 1,
-      max: 999,
+      max: shared.constants.MAX_LEVEL_HARD_CAP,
     },
 
     // Class System

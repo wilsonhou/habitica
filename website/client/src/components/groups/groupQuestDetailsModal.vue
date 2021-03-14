@@ -1,6 +1,6 @@
 <template>
   <b-modal
-    id="quest-details"
+    id="group-quest-details"
     title="Empty"
     size="md"
     :hide-footer="true"
@@ -97,12 +97,6 @@
     }
   }
 
-  .quest-details {
-    margin: 0 auto;
-    text-align: left;
-    width: 180px;
-  }
-
   .btn-primary {
     margin: 1em 0;
   }
@@ -193,6 +187,8 @@
       cursor: pointer;
     }
   }
+
+
 </style>
 
 <script>
@@ -252,12 +248,6 @@ export default {
         _id: member._id,
       }));
     },
-    canEditQuest () {
-      if (!this.group.quest) return false;
-      const isQuestLeader = this.group.quest.leader === this.user._id;
-      const isPartyLeader = this.group.leader._id === this.user._id;
-      return isQuestLeader || isPartyLeader;
-    },
   },
   methods: {
     async questConfirm () {
@@ -275,7 +265,7 @@ export default {
       }
     },
     close () {
-      this.$root.$emit('bv::hide::modal', 'quest-details');
+      this.$root.$emit('bv::hide::modal', 'group-quest-details');
     },
   },
 };

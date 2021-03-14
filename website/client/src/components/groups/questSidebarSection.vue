@@ -18,7 +18,7 @@
         <button
           v-once
           class="btn btn-secondary"
-          @click="openStartQuestModal()"
+          @click="openSelectQuestModal()"
         >
           {{ $t('selectQuest') }}
         </button>
@@ -679,11 +679,15 @@ export default {
     },
   },
   methods: {
-    openStartQuestModal () {
-      this.$root.$emit('bv::show::modal', 'start-quest-modal');
+    openSelectQuestModal () {
+      this.$root.$emit('bv::show::modal', 'select-quest-modal');
     },
     openQuestDetails () {
-      this.$root.$emit('bv::show::modal', 'quest-details');
+      this.$root.$emit('bv::show::modal', 'quest-detail-modal');
+      this.$root.$emit('selectQuest', {
+        key: this.group.quest.key,
+        from: 'sidebar',
+      });
     },
     openParticipantList () {
       this.$root.$emit('bv::show::modal', 'participant-list');

@@ -53,32 +53,34 @@
 .table-row {
   display: table-row;
   margin-bottom: 4px;
+  font-size: 14px;
+  height: 1.5rem;
 }
 
 dd {
-  height: 24px;
   padding-left: 1em;
-  padding-top: 3px;
-  padding-bottom: 3px;
+  text-align: right;
 }
 
 dt, dd {
   display: table-cell;
   vertical-align: middle;
-}
-
-dt, dd, dd > * {
-  text-align: left;
+  height: 16px;
+  max-height: 16px;
 }
 
 dt {
-  font-size: 1.3em;
-  line-height: 1.2;
+  font-weight: bold;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.33;
+  letter-spacing: normal;
+  text-align: left;
   color: $gray-50;
 }
 
 .svg-icon {
-  margin-right: 4px;
+  margin-left: 4px;
 }
 
 .small-version {
@@ -92,10 +94,11 @@ dt {
 </style>
 
 <style lang="scss">
+@import '~@/assets/scss/colors.scss';
+
 .questPopover {
   dt {
     color: inherit;
-    font-size: 1em;
     white-space: nowrap;
   }
 }
@@ -112,7 +115,7 @@ dt {
   fill: #ffb445;
 }
 .star-empty {
-  fill: #686274;
+  fill: $gray-400;
 }
 
 </style>

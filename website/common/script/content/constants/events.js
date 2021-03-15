@@ -13,6 +13,7 @@ export const EVENTS = {
     start: '2021-03-16T00:00-05:00',
     end: '2021-03-17T00:00-05:00',
     aprilFools: 'invert',
+    npcImageSuffix: '',
   },
   noCurrentEvent2021: {
     start: '2021-01-31T20:00-05:00',

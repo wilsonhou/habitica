@@ -9,17 +9,14 @@ const gemsPromo = {
 };
 
 export const EVENTS = {
-  testPromo2021: {
-    start: '2021-02-20T08:00-05:00',
-    end: '2021-03-20T20:00-05:00',
-    promo: 'g1g1',
+  testFools2021: {
+    start: '2021-03-16T00:00-05:00',
+    end: '2021-03-17T00:00-05:00',
     aprilFools: 'invert',
   },
-  testEvent2021: {
-    start: '2021-02-25T08:00-05:00',
-    end: '2021-03-31T20:00-05:00',
-    season: 'winter',
-    npcImageSuffix: 'nye',
+  noCurrentEvent2021: {
+    start: '2021-01-31T20:00-05:00',
+    end: '2021-03-30T00:00-05:00',
   },
   winter2021: {
     start: '2020-12-17T08:00-05:00',

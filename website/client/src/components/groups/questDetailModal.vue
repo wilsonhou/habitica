@@ -191,11 +191,6 @@ export default {
       return quests.quests[this.selectedQuest];
     },
     dialogClass () {
-      console.info({
-        group: this.groupHasQuest,
-        sel: this.fromSelectionDialog,
-        edit: this.canEditQuest,
-      });
       if (!this.groupHasQuest || this.fromSelectionDialog || this.canEditQuest) {
         return 'need-bottom-padding';
       }

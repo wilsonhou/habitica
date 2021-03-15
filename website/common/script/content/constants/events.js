@@ -11,7 +11,7 @@ const gemsPromo = {
 export const EVENTS = {
   noCurrentEvent2021: {
     start: '2021-02-16T08:00-05:00',
-    end: '2021-03-07T08:00-05:00',
+    end: '2021-03-23T08:00-05:00',
     season: 'normal',
   },
   valentines2021: {

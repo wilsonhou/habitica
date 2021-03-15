@@ -30,9 +30,8 @@ api.getWorldState = {
     const worldState = {};
 
     worldState.worldBoss = await getWorldBoss();
-
     worldState.currentEvent = getCurrentEvent();
-    worldState.npcImageSuffix = worldState.currentEvent.npcImageSuffix;
+    worldState.npcImageSuffix = worldState.currentEvent.npcImageSuffix || '';
 
     worldState.currentEventList = getCurrentEventList();
 

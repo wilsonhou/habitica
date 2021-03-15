@@ -13,6 +13,7 @@ export const EVENTS = {
     start: '2021-02-16T08:00-05:00',
     end: '2021-03-23T08:00-05:00',
     season: 'normal',
+    npcImageSuffix: '',
   },
   valentines2021: {
     start: '2021-02-07T08:00-05:00',

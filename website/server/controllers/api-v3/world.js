@@ -31,7 +31,7 @@ api.getWorldState = {
 
     worldState.worldBoss = await getWorldBoss();
     worldState.currentEvent = getCurrentEvent();
-    worldState.npcImageSuffix = worldState.currentEvent.npcImageSuffix || '';
+    worldState.npcImageSuffix = worldState.currentEvent ? worldState.currentEvent.npcImageSuffix : '';
 
     worldState.currentEventList = getCurrentEventList();
 

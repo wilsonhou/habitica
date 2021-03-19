@@ -11,7 +11,7 @@ const gemsPromo = {
 export const EVENTS = {
   testFools2021: {
     start: '2021-03-16T00:00-05:00',
-    end: '2021-03-21T00:00-05:00',
+    end: '2021-03-23T00:00-05:00',
     aprilFools: 'invert',
     npcImageSuffix: '',
   },

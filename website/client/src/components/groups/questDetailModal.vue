@@ -418,7 +418,6 @@ export default {
 
       if (selectQuestPayload) {
         this.selectMode = false;
-        console.info('handleOpen', selectQuestPayload);
       } else {
         this.selectMode = true;
       }
